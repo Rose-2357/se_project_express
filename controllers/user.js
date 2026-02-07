@@ -5,11 +5,6 @@ const {
   handlePostError,
   handleIdError,
 } = require("../utils/errorHandlers");
-const {
-  INTERNAL_SERVER_ERROR_CODE,
-  NOT_FOUND_ERROR_CODE,
-  BAD_REQUEST_ERROR_CODE,
-} = require("../utils/errors");
 
 module.exports.getUsers = (req, res) => {
   User.find({})
