@@ -5,6 +5,7 @@ const {
   handlePostError,
   handleIdError,
 } = require("../utils/errorHandlers");
+const { USER_NOT_FOUND_ERROR_MESSAGE } = require("../utils/errorMessages");
 
 module.exports.getUsers = (req, res) => {
   User.find({})
@@ -17,7 +18,7 @@ module.exports.getUser = (req, res) => {
 
   User.findById(id)
     .orFail(() => {
-      throw new NotFoundError("User was not found: invalid ID");
+      throw new NotFoundError(USER_NOT_FOUND_ERROR_MESSAGE);
     })
     .then((user) => res.send(user))
     .catch((err) => handleIdError(err, res));
