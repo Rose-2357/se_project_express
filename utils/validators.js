@@ -9,12 +9,17 @@ module.exports = {
   },
   imageValidator: {
     validator(v) {
-      return new Promise((reject, resolve) => {
-        const img = new Image();
-        img.src = v;
-        img.onload = resolve();
-        img.onerror = reject();
-      });
+      return fetch(v)
+        .then((res) =>
+          res.ok ? res.headers.get("Content-Type") : Promise.reject(res.status)
+        )
+        .then((content) => {
+          if (content.toString().startsWith("image/")) {
+            return Promise.resolve();
+          }
+          return Promise.reject();
+        })
+        .catch(() => false);
     },
     message: "URL is not a valid image",
   },
