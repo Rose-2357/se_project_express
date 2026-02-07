@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { urlValidator, imageValidator } = require("../utils/validators");
+const { urlValidator } = require("../utils/validators");
 
 const clothingitemSchema = new mongoose.Schema({
   name: {
@@ -16,7 +16,7 @@ const clothingitemSchema = new mongoose.Schema({
   imageUrl: {
     type: String,
     required: true,
-    validate: [urlValidator, imageValidator],
+    validate: urlValidator,
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,

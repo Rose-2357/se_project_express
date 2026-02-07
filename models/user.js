@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { urlValidator, imageValidator } = require("../utils/validators");
+const { urlValidator } = require("../utils/validators");
 
 const useSchema = new mongoose.Schema({
   name: {
@@ -11,7 +11,7 @@ const useSchema = new mongoose.Schema({
   avatar: {
     type: String,
     required: true,
-    validate: [urlValidator, imageValidator],
+    validate: urlValidator,
   },
 });
 
