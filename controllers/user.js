@@ -1,4 +1,10 @@
+const NotFoundError = require("../customError/NotFoundError");
 const User = require("../models/user");
+const {
+  handleGeneralError,
+  handlePostError,
+  handleIdError,
+} = require("../utils/errorHandlers");
 const {
   INTERNAL_SERVER_ERROR_CODE,
   NOT_FOUND_ERROR_CODE,
@@ -8,11 +14,7 @@ const {
 module.exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send(users))
-    .catch(() =>
-      res
-        .status(INTERNAL_SERVER_ERROR_CODE)
-        .send({ message: "Internal server error" })
-    );
+    .catch(() => handleGeneralError(res));
 };
 
 module.exports.getUser = (req, res) => {
@@ -20,20 +22,10 @@ module.exports.getUser = (req, res) => {
 
   User.findById(id)
     .orFail(() => {
-      const error = new Error("ID was not found");
-      error.name = "NotFoundError";
-      throw error;
+      throw new NotFoundError("User was not found: invalid ID");
     })
     .then((user) => res.send(user))
-    .catch((err) => {
-      if (err.name === "NotFoundError") {
-        return res.status(NOT_FOUND_ERROR_CODE).send(err.message);
-      }
-      if (err.name === "CastError") {
-        return res.status(BAD_REQUEST_ERROR_CODE).send(err.message);
-      }
-      res.status(INTERNAL_SERVER_ERROR_CODE).send(err);
-    });
+    .catch((err) => handleIdError(err, res));
 };
 
 module.exports.createUser = (req, res) => {
@@ -42,9 +34,6 @@ module.exports.createUser = (req, res) => {
   User.create({ name, avatar })
     .then((newUser) => res.status(201).send({ data: newUser }))
     .catch((err) => {
-      if (err.name === "ValidationError") {
-        return res.status(BAD_REQUEST_ERROR_CODE).send(err.message);
-      }
-      res.status(INTERNAL_SERVER_ERROR_CODE).send(err);
+      handlePostError(err, res);
     });
 };
