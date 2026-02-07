@@ -15,9 +15,9 @@ module.exports.getItems = (req, res) => {
 };
 
 module.exports.createItem = (req, res) => {
-  const { name, weather, imageUrl, owner } = req.body;
+  const { name, weather, imageUrl } = req.body;
 
-  Item.create({ name, weather, imageUrl, owner })
+  Item.create({ name, weather, imageUrl, owner: req.user._id })
     .then((newItem) => res.status(201).send(newItem))
     .catch((err) => {
       handlePostError(err, res);
