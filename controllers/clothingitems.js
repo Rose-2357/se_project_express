@@ -32,7 +32,7 @@ module.exports.deleteItem = (req, res) => {
     .orFail(() => {
       throw new NotFoundError(ITEM_NOT_FOUND_ERROR_MESSAGE);
     })
-    .then(() => res.status(204).send())
+    .then(() => res.status(200).send({ message: "Item was deleted" }))
     .catch((err) => {
       handleIdError(err, res);
     });
