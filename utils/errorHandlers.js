@@ -14,7 +14,9 @@ module.exports.handlePostError = (err, res) => {
   if (err.name === "ValidationError") {
     return res.status(BAD_REQUEST_ERROR_CODE).send({ message: err.message });
   }
-  return res.status(INTERNAL_SERVER_ERROR_CODE).send(err);
+  return res
+    .status(INTERNAL_SERVER_ERROR_CODE)
+    .send({ message: "Internal server error" });
 };
 
 module.exports.handleIdError = (err, res) => {
@@ -24,5 +26,7 @@ module.exports.handleIdError = (err, res) => {
   if (err.name === "CastError") {
     return res.status(BAD_REQUEST_ERROR_CODE).send({ message: err.message });
   }
-  return res.status(INTERNAL_SERVER_ERROR_CODE).send(err);
+  return res
+    .status(INTERNAL_SERVER_ERROR_CODE)
+    .send({ message: "Internal server error" });
 };
