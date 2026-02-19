@@ -7,12 +7,6 @@ const { PORT = 3001 } = process.env;
 
 mongoose.connect("mongodb://127.0.0.1:27017/wtwr_db");
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: "6986dae5788db40e79eb604f",
-  };
-  next();
-});
 app.use(express.json());
 app.use("/", routes);
 
