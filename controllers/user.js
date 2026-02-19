@@ -1,29 +1,15 @@
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const NotFoundError = require("../customError/NotFoundError");
 const User = require("../models/user");
 const {
   handleGeneralError,
   handlePostError,
   handleIdError,
+  handleLoginError,
 } = require("../utils/errorHandlers");
 const { USER_NOT_FOUND_ERROR_MESSAGE } = require("../utils/errorMessages");
-
-module.exports.getUsers = (req, res) => {
-  User.find({})
-    .then((users) => res.send(users))
-    .catch((err) => handleGeneralError(err, res));
-};
-
-module.exports.getUser = (req, res) => {
-  const { id } = req.params;
-
-  User.findById(id)
-    .orFail(() => {
-      throw new NotFoundError(USER_NOT_FOUND_ERROR_MESSAGE);
-    })
-    .then((user) => res.send(user))
-    .catch((err) => handleIdError(err, res));
-};
+const { JWT_SECRET } = require("../utils/config");
 
 module.exports.createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
@@ -35,4 +21,19 @@ module.exports.createUser = (req, res) => {
         handlePostError(err, res, true);
       });
   });
+};
+
+module.exports.login = (req, res) => {
+  const { email, password } = req.body;
+
+  User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
+        expiresIn: "7d",
+      });
+      res.send(token);
+    })
+    .catch((err) => {
+      handleLoginError(err, res);
+    });
 };

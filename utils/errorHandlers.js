@@ -3,6 +3,7 @@ const {
   BAD_REQUEST_ERROR_CODE,
   NOT_FOUND_ERROR_CODE,
   CONFLICT_ERROR_CODE,
+  UNAUTHORIZED_ERROR_CODE,
 } = require("./errors");
 
 module.exports.handleGeneralError = (err, res) => {
@@ -31,5 +32,13 @@ module.exports.handleIdError = (err, res) => {
   if (err.name === "CastError") {
     return res.status(BAD_REQUEST_ERROR_CODE).send({ message: err.message });
   }
+  return this.handleGeneralError(err, res);
+};
+
+module.exports.handleLoginError = (err, res) => {
+  if (err.name === "AuthenticationError") {
+    return res.status(UNAUTHORIZED_ERROR_CODE).send({ message: err.message });
+  }
+
   return this.handleGeneralError(err, res);
 };
