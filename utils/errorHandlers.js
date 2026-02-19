@@ -2,21 +2,26 @@ const {
   INTERNAL_SERVER_ERROR_CODE,
   BAD_REQUEST_ERROR_CODE,
   NOT_FOUND_ERROR_CODE,
+  CONFLICT_ERROR_CODE,
 } = require("./errors");
 
-module.exports.handleGeneralError = (res) => {
+module.exports.handleGeneralError = (err, res) => {
+  console.error(err);
   res
     .status(INTERNAL_SERVER_ERROR_CODE)
     .send({ message: "Internal server error" });
 };
 
-module.exports.handlePostError = (err, res) => {
+module.exports.handlePostError = (err, res, forUser = false) => {
   if (err.name === "ValidationError") {
     return res.status(BAD_REQUEST_ERROR_CODE).send({ message: err.message });
   }
-  return res
-    .status(INTERNAL_SERVER_ERROR_CODE)
-    .send({ message: "Internal server error" });
+  if (forUser && err.code === 11000) {
+    return res
+      .status(CONFLICT_ERROR_CODE)
+      .send({ message: "Email already exists" });
+  }
+  return this.handleGeneralError(err, res);
 };
 
 module.exports.handleIdError = (err, res) => {
@@ -26,7 +31,5 @@ module.exports.handleIdError = (err, res) => {
   if (err.name === "CastError") {
     return res.status(BAD_REQUEST_ERROR_CODE).send({ message: err.message });
   }
-  return res
-    .status(INTERNAL_SERVER_ERROR_CODE)
-    .send({ message: "Internal server error" });
+  return this.handleGeneralError(err, res);
 };

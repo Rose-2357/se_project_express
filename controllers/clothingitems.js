@@ -10,8 +10,8 @@ const { ITEM_NOT_FOUND_ERROR_MESSAGE } = require("../utils/errorMessages");
 module.exports.getItems = (req, res) => {
   Item.find({})
     .then((items) => res.send(items))
-    .catch(() => {
-      handleGeneralError(res);
+    .catch((err) => {
+      handleGeneralError(err, res);
     });
 };
 

@@ -1,3 +1,4 @@
+const bcrypt = require("bcryptjs");
 const NotFoundError = require("../customError/NotFoundError");
 const User = require("../models/user");
 const {
@@ -10,7 +11,7 @@ const { USER_NOT_FOUND_ERROR_MESSAGE } = require("../utils/errorMessages");
 module.exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send(users))
-    .catch(() => handleGeneralError(res));
+    .catch((err) => handleGeneralError(err, res));
 };
 
 module.exports.getUser = (req, res) => {
@@ -25,11 +26,13 @@ module.exports.getUser = (req, res) => {
 };
 
 module.exports.createUser = (req, res) => {
-  const { name, avatar } = req.body;
+  const { name, avatar, email, password } = req.body;
 
-  User.create({ name, avatar })
-    .then((newUser) => res.status(201).send({ data: newUser }))
-    .catch((err) => {
-      handlePostError(err, res);
-    });
+  bcrypt.hash(password, 10).then((hash) => {
+    User.create({ name, avatar, email, password: hash })
+      .then((newUser) => res.status(201).send({ data: newUser }))
+      .catch((err) => {
+        handlePostError(err, res, true);
+      });
+  });
 };

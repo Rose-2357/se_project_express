@@ -23,4 +23,10 @@ module.exports = {
     },
     message: "URL is not a valid image",
   },
+  emailValidator: {
+    validator(v) {
+      return validator.isEmail(v);
+    },
+    message: "You must enter a valid email",
+  },
 };
