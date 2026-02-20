@@ -27,7 +27,10 @@ module.exports.createUser = (req, res) => {
 
   bcrypt.hash(password, 10).then((hash) => {
     User.create({ name, avatar, email, password: hash })
-      .then((newUser) => res.status(201).send({ data: newUser }))
+      .then((newUser) => {
+        delete newUser._doc.password;
+        res.status(201).send({ data: newUser });
+      })
       .catch((err) => {
         handlePostError(err, res, true);
       });
@@ -65,8 +68,10 @@ module.exports.updateUser = (req, res) => {
       throw new NotFoundError(USER_NOT_FOUND_ERROR_MESSAGE);
     })
     .then((newData) => {
-      res.send(newData);
+      delete newData._doc.password;
+      res.status(201).send({ data: newData });
     })
+
     .catch((err) => {
       handleUpdateError(err, res);
     });
