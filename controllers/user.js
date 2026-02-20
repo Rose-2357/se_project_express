@@ -3,13 +3,24 @@ const jwt = require("jsonwebtoken");
 const NotFoundError = require("../customError/NotFoundError");
 const User = require("../models/user");
 const {
-  handleGeneralError,
   handlePostError,
   handleIdError,
   handleLoginError,
+  handleUpdateError,
 } = require("../utils/errorHandlers");
 const { USER_NOT_FOUND_ERROR_MESSAGE } = require("../utils/errorMessages");
 const { JWT_SECRET } = require("../utils/config");
+
+module.exports.getCurrentUser = (req, res) => {
+  const { _id } = req.user;
+
+  return User.findById(_id)
+    .orFail(() => {
+      throw new NotFoundError(USER_NOT_FOUND_ERROR_MESSAGE);
+    })
+    .then((user) => res.send(user))
+    .catch((err) => handleIdError(err, res));
+};
 
 module.exports.createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
@@ -35,5 +46,28 @@ module.exports.login = (req, res) => {
     })
     .catch((err) => {
       handleLoginError(err, res);
+    });
+};
+
+module.exports.updateUser = (req, res) => {
+  const { name, avatar } = req.body;
+  const { _id } = req.user;
+
+  User.findByIdAndUpdate(
+    _id,
+    { name, avatar },
+    {
+      new: true,
+      runValidators: true,
+    }
+  )
+    .orFail(() => {
+      throw new NotFoundError(USER_NOT_FOUND_ERROR_MESSAGE);
+    })
+    .then((newData) => {
+      res.send(newData);
+    })
+    .catch((err) => {
+      handleUpdateError(err, res);
     });
 };
