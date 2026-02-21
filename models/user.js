@@ -6,24 +6,24 @@ const AuthenticationError = require("../customError/AuthenticationError");
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
-    minlength: 2,
-    maxlength: 30,
+    required: [true, 'The "name" field must be filled'],
+    minlength: [2, 'The minimum length of the "name" field is 2'],
+    maxlength: [30, 'The maximum length of the "name" field is 30'],
   },
   avatar: {
     type: String,
-    required: true,
+    required: [true, 'The "avatar" field must be filled'],
     validate: urlValidator,
   },
   email: {
     type: String,
-    required: true,
+    required: [true, 'The "email" field must be filled'],
     unique: true,
     validate: emailValidator,
   },
   password: {
     type: String,
-    required: true,
+    required: [true, 'The "password" field must be filled'],
     select: false,
   },
 });

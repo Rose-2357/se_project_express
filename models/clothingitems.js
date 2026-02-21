@@ -4,24 +4,24 @@ const { urlValidator } = require("../utils/validators");
 const clothingitemSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
-    minlength: 2,
-    maxlength: 30,
+    required: [true, 'The "name" field must be filled'],
+    minlength: [2, 'The minimum length of the "name" field is 2'],
+    maxlength: [30, 'The maximum length of the "name" field is 30'],
   },
   weather: {
     type: String,
     enum: ["hot", "warm", "cold"],
-    required: true,
+    required: [true, 'The "weather" field must be filled'],
   },
   imageUrl: {
     type: String,
-    required: true,
+    required: [true, 'The "imageUrl" field must be filled'],
     validate: urlValidator,
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "user",
-    required: true,
+    required: [true, 'The "owner" field must be filled'],
   },
   likes: {
     type: [
