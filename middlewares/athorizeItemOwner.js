@@ -17,6 +17,6 @@ module.exports = (req, res, next) => {
       if (err.name === "ForbiddenError") {
         return res.status(FORBIDDEN_ERROR_CODE).send({ message: err.message });
       }
-      next(); //other errors are handeled by the next methode
+      return next(); // other errors are handeled by the next methode
     });
 };

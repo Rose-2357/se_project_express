@@ -29,8 +29,9 @@ module.exports.createUser = (req, res) => {
   bcrypt.hash(password, 10).then((hash) => {
     User.create({ name, avatar, email, password: hash })
       .then((newUser) => {
-        delete newUser._doc.password;
-        res.status(201).send({ data: newUser });
+        const data = { ...newUser._doc };
+        delete data.password;
+        res.status(201).send({ data });
       })
       .catch((err) => {
         handlePostError(err, res, true);
@@ -43,9 +44,11 @@ module.exports.login = (req, res) => {
 
   if (!email || !password) {
     const emptyField = !email ? "email" : "password";
-    return res
+    res
       .status(BAD_REQUEST_ERROR_CODE)
       .send({ message: `${emptyField} must be filled` });
+
+    return;
   }
 
   User.findUserByCredentials(email, password)
@@ -76,7 +79,6 @@ module.exports.updateUser = (req, res) => {
       throw new NotFoundError(USER_NOT_FOUND_ERROR_MESSAGE);
     })
     .then((newData) => {
-      delete newData._doc.password;
       res.send({ data: newData });
     })
 

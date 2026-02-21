@@ -17,6 +17,7 @@ function handleValidationError(err, res) {
   if (err.name === "ValidationError") {
     return res.status(BAD_REQUEST_ERROR_CODE).send({ message: err.message });
   }
+  return undefined;
 }
 
 function handleConflictError(err, res) {
@@ -25,24 +26,28 @@ function handleConflictError(err, res) {
       .status(CONFLICT_ERROR_CODE)
       .send({ message: "Email already exists" });
   }
+  return undefined;
 }
 
 function handleNotFoundError(err, res) {
   if (err.name === "NotFoundError") {
     return res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
   }
+  return undefined;
 }
 
 function handleCastError(err, res) {
   if (err.name === "CastError") {
     return res.status(BAD_REQUEST_ERROR_CODE).send({ message: err.message });
   }
+  return undefined;
 }
 
 function handleAuthenticationError(err, res) {
   if (err.name === "AuthenticationError") {
     return res.status(UNAUTHORIZED_ERROR_CODE).send({ message: err.message });
   }
+  return undefined;
 }
 
 function handleErrors(err, res, ...functions) {
@@ -59,24 +64,20 @@ function handleErrors(err, res, ...functions) {
 
 module.exports.handleGeneralError = handleInternalServerError;
 
-module.exports.handlePostError = (err, res, forUser = false) => {
-  return handleErrors(err, res, handleValidationError, handleConflictError);
-};
+module.exports.handlePostError = (err, res) =>
+  handleErrors(err, res, handleValidationError, handleConflictError);
 
-module.exports.handleIdError = (err, res) => {
-  return handleErrors(err, res, handleNotFoundError, handleCastError);
-};
+module.exports.handleIdError = (err, res) =>
+  handleErrors(err, res, handleNotFoundError, handleCastError);
 
-module.exports.handleLoginError = (err, res) => {
-  return handleErrors(err, res, handleAuthenticationError);
-};
+module.exports.handleLoginError = (err, res) =>
+  handleErrors(err, res, handleAuthenticationError);
 
-module.exports.handleUpdateError = (err, res) => {
-  return handleErrors(
+module.exports.handleUpdateError = (err, res) =>
+  handleErrors(
     err,
     res,
     handleNotFoundError,
     handleCastError,
     handleValidationError
   );
-};
