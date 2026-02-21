@@ -10,6 +10,7 @@ const {
 } = require("../utils/errorHandlers");
 const { USER_NOT_FOUND_ERROR_MESSAGE } = require("../utils/errorMessages");
 const { JWT_SECRET } = require("../utils/config");
+const { BAD_REQUEST_ERROR_CODE } = require("../utils/errors");
 
 module.exports.getCurrentUser = (req, res) => {
   const { _id } = req.user;
@@ -40,6 +41,13 @@ module.exports.createUser = (req, res) => {
 module.exports.login = (req, res) => {
   const { email, password } = req.body;
 
+  if (!email || !password) {
+    const emptyField = !email ? "email" : "password";
+    return res
+      .status(BAD_REQUEST_ERROR_CODE)
+      .send({ message: `${emptyField} must be filled` });
+  }
+
   User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
@@ -69,7 +77,7 @@ module.exports.updateUser = (req, res) => {
     })
     .then((newData) => {
       delete newData._doc.password;
-      res.status(201).send({ data: newData });
+      res.send({ data: newData });
     })
 
     .catch((err) => {
