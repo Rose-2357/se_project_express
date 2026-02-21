@@ -1,5 +1,5 @@
 const ForbiddenError = require("../customError/ForbiddenError");
-const Item = require("../models/clothingitems");
+const Item = require("../models/clothingItems");
 const { FORBIDDEN_ERROR_CODE } = require("../utils/errors");
 
 module.exports = (req, res, next) => {

@@ -5,7 +5,7 @@ const {
   deleteItem,
   likeItem,
   disLikeItem,
-} = require("../controllers/clothingitems");
+} = require("../controllers/clothingItems");
 const athorizeItemOwner = require("../middlewares/athorizeItemOwner");
 const auth = require("../middlewares/auth");
 

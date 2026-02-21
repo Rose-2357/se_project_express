@@ -1,5 +1,5 @@
 const NotFoundError = require("../customError/NotFoundError");
-const Item = require("../models/clothingitems");
+const Item = require("../models/clothingItems");
 const {
   handleGeneralError,
   handlePostError,
