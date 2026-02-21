@@ -6,18 +6,21 @@ const {
   likeItem,
   disLikeItem,
 } = require("../controllers/clothingitems");
+const athorizeItemOwner = require("../middlewares/athorizeItemOwner");
 const auth = require("../middlewares/auth");
 
 itemRouter.get("/items", getItems);
 
-itemRouter.use(auth);
+itemRouter.use("/items", auth);
 
 itemRouter.post("/items", createItem);
-
-itemRouter.delete("/items/:id", deleteItem);
 
 itemRouter.put("/items/:id/likes", likeItem);
 
 itemRouter.delete("/items/:id/likes", disLikeItem);
+
+itemRouter.use("/items/:id", athorizeItemOwner);
+
+itemRouter.delete("/items/:id", deleteItem);
 
 module.exports = itemRouter;

@@ -48,15 +48,13 @@ function handleAuthenticationError(err, res) {
 function handleErrors(err, res, ...functions) {
   let returnValue;
 
-  functions.push(handleInternalServerError);
-
   functions.forEach((func) => {
     if (typeof func !== "function")
       throw new Error("Parameters must be functions only");
     returnValue = func(err, res) || returnValue;
   });
 
-  return returnValue;
+  return returnValue || handleInternalServerError(err, res);
 }
 
 module.exports.handleGeneralError = handleInternalServerError;
