@@ -42,17 +42,12 @@ module.exports.createUser = (req, res) => {
 module.exports.login = (req, res) => {
   const { email, password } = req.body;
 
-  if (!email || !password) {
-    const emptyField = !email ? "email" : "password";
-    res
-      .status(BAD_REQUEST_ERROR_CODE)
-      .send({ message: `${emptyField} must be filled` });
-
-    return;
-  }
-
   User.findUserByCredentials(email, password)
     .then((user) => {
+      if (!email || !password) {
+        const emptyField = !email ? "email" : "password";
+        throw new ValidationError(`The "${emptyField}" field must be filled`);
+      }
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
       });

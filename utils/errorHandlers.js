@@ -71,7 +71,7 @@ module.exports.handleIdError = (err, res) =>
   handleErrors(err, res, handleNotFoundError, handleCastError);
 
 module.exports.handleLoginError = (err, res) =>
-  handleErrors(err, res, handleAuthenticationError);
+  handleErrors(err, res, handleValidationError, handleAuthenticationError);
 
 module.exports.handleUpdateError = (err, res) =>
   handleErrors(
