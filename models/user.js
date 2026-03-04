@@ -12,7 +12,6 @@ const userSchema = new mongoose.Schema({
   },
   avatar: {
     type: String,
-    required: [true, 'The "avatar" field must be filled'],
     validate: urlValidator,
   },
   email: {
