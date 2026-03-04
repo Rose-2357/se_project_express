@@ -3,7 +3,7 @@ const validator = require("validator");
 module.exports = {
   urlValidator: {
     validator(v) {
-      return validator.isURL(v);
+      return validator.isURL(v) || !v;
     },
     message: "You must enter a valid url",
   },
