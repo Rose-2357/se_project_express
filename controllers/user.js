@@ -10,7 +10,6 @@ const {
 } = require("../utils/errorHandlers");
 const { USER_NOT_FOUND_ERROR_MESSAGE } = require("../utils/errorMessages");
 const { JWT_SECRET } = require("../utils/config");
-const { BAD_REQUEST_ERROR_CODE } = require("../utils/errors");
 
 module.exports.getCurrentUser = (req, res) => {
   const { _id } = req.user;
