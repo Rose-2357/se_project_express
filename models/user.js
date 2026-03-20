@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const { urlValidator, emailValidator } = require("../utils/validators");
-const AuthenticationError = require("../customError/UnathorizedError");
+const UnathorizedError = require("../customError/UnathorizedError");
+const BadRequestError = require("../customError/BadRequestError");
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -27,17 +28,21 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.statics.findUserByCredentials = function (email, password) {
+userSchema.statics.findUserByCredentials = function (email, password, next) {
+  if (!email || !password) {
+    const emptyField = !email ? "email" : "password";
+    next(new BadRequestError(`The "${emptyField}" field must be filled`));
+  }
   return this.findOne({ email })
     .select("+password")
     .then((user) => {
       if (!user) {
-        return Promise.reject(new AuthenticationError());
+        return next(new UnathorizedError("incorrext email or password"));
       }
 
       return bcrypt.compare(password, user.password).then((matched) => {
         if (!matched) {
-          return Promise.reject(new AuthenticationError());
+          return next(new UnathorizedError("incorrext email or password"));
         }
 
         return user;

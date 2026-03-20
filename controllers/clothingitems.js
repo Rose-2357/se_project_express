@@ -2,13 +2,12 @@ const NotFoundError = require("../customError/NotFoundError");
 const Item = require("../models/clothingitems");
 const { ITEM_NOT_FOUND_ERROR_MESSAGE } = require("../utils/errorMessages");
 
-const BadRequestError = require("../customError/BadRequestError");
 const {
   handleIdError,
   handleValidationError,
 } = require("../utils/errorHandlers");
 
-module.exports.getItems = (req, res) => {
+module.exports.getItems = (req, res, next) => {
   Item.find({})
     .then((items) => res.send(items))
     .catch(next);

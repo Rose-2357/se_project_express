@@ -4,7 +4,6 @@ const NotFoundError = require("../customError/NotFoundError");
 const User = require("../models/user");
 const { USER_NOT_FOUND_ERROR_MESSAGE } = require("../utils/errorMessages");
 const { JWT_SECRET } = require("../utils/config");
-const BadRequestError = require("../customError/BadRequestError");
 const {
   handleIdError,
   handleValidationError,
@@ -36,15 +35,11 @@ module.exports.createUser = (req, res, next) => {
   });
 };
 
-module.exports.login = (req, res) => {
+module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
 
-  User.findUserByCredentials(email, password)
+  User.findUserByCredentials(email, password, next)
     .then((user) => {
-      if (!email || !password) {
-        const emptyField = !email ? "email" : "password";
-        throw new ValidationError(`The "${emptyField}" field must be filled`);
-      }
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
       });
