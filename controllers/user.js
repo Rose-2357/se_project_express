@@ -2,16 +2,16 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const NotFoundError = require("../customError/NotFoundError");
 const User = require("../models/user");
-const {
-  handlePostError,
-  handleIdError,
-  handleLoginError,
-  handleUpdateError,
-} = require("../utils/errorHandlers");
 const { USER_NOT_FOUND_ERROR_MESSAGE } = require("../utils/errorMessages");
 const { JWT_SECRET } = require("../utils/config");
+const BadRequestError = require("../customError/BadRequestError");
+const {
+  handleIdError,
+  handleValidationError,
+  handleUpdateError,
+} = require("../utils/errorHandlers");
 
-module.exports.getCurrentUser = (req, res) => {
+module.exports.getCurrentUser = (req, res, next) => {
   const { _id } = req.user;
 
   return User.findById(_id)
@@ -19,10 +19,10 @@ module.exports.getCurrentUser = (req, res) => {
       throw new NotFoundError(USER_NOT_FOUND_ERROR_MESSAGE);
     })
     .then((user) => res.send(user))
-    .catch((err) => handleIdError(err, res));
+    .catch((err) => handleIdError(err, next));
 };
 
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => {
   const { name, avatar, email, password } = req.body;
 
   bcrypt.hash(password, 10).then((hash) => {
@@ -32,9 +32,7 @@ module.exports.createUser = (req, res) => {
         delete data.password;
         res.status(201).send({ data });
       })
-      .catch((err) => {
-        handlePostError(err, res, true);
-      });
+      .catch((err) => handleValidationError(err, next));
   });
 };
 
@@ -52,12 +50,10 @@ module.exports.login = (req, res) => {
       });
       res.send({ token });
     })
-    .catch((err) => {
-      handleLoginError(err, res);
-    });
+    .catch((err) => handleValidationError(err, next));
 };
 
-module.exports.updateUser = (req, res) => {
+module.exports.updateUser = (req, res, next) => {
   const { name, avatar } = req.body;
   const { _id } = req.user;
 
@@ -76,7 +72,5 @@ module.exports.updateUser = (req, res) => {
       res.send({ data: newData });
     })
 
-    .catch((err) => {
-      handleUpdateError(err, res);
-    });
+    .catch((err) => handleUpdateError(err, next));
 };

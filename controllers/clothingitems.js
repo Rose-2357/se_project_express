@@ -1,31 +1,28 @@
 const NotFoundError = require("../customError/NotFoundError");
 const Item = require("../models/clothingitems");
-const {
-  handleGeneralError,
-  handlePostError,
-  handleIdError,
-} = require("../utils/errorHandlers");
 const { ITEM_NOT_FOUND_ERROR_MESSAGE } = require("../utils/errorMessages");
+
+const BadRequestError = require("../customError/BadRequestError");
+const {
+  handleIdError,
+  handleValidationError,
+} = require("../utils/errorHandlers");
 
 module.exports.getItems = (req, res) => {
   Item.find({})
     .then((items) => res.send(items))
-    .catch((err) => {
-      handleGeneralError(err, res);
-    });
+    .catch(next);
 };
 
-module.exports.createItem = (req, res) => {
+module.exports.createItem = (req, res, next) => {
   const { name, weather, imageUrl } = req.body;
 
   Item.create({ name, weather, imageUrl, owner: req.user._id })
     .then((newItem) => res.status(201).send(newItem))
-    .catch((err) => {
-      handlePostError(err, res);
-    });
+    .catch((err) => handleValidationError(err, next));
 };
 
-module.exports.deleteItem = (req, res) => {
+module.exports.deleteItem = (req, res, next) => {
   const { id } = req.params;
 
   Item.findByIdAndDelete(id)
@@ -33,12 +30,10 @@ module.exports.deleteItem = (req, res) => {
       throw new NotFoundError(ITEM_NOT_FOUND_ERROR_MESSAGE);
     })
     .then(() => res.status(200).send({ message: "Item was deleted" }))
-    .catch((err) => {
-      handleIdError(err, res);
-    });
+    .catch((err) => handleIdError(err, next));
 };
 
-module.exports.likeItem = (req, res) => {
+module.exports.likeItem = (req, res, next) => {
   const { id } = req.params;
 
   Item.findByIdAndUpdate(
@@ -50,10 +45,10 @@ module.exports.likeItem = (req, res) => {
       throw new NotFoundError(ITEM_NOT_FOUND_ERROR_MESSAGE);
     })
     .then((newItem) => res.send(newItem))
-    .catch((err) => handleIdError(err, res));
+    .catch((err) => handleIdError(err, next));
 };
 
-module.exports.disLikeItem = (req, res) => {
+module.exports.disLikeItem = (req, res, next) => {
   const { id } = req.params;
 
   Item.findByIdAndUpdate(id, { $pull: { likes: req.user._id } }, { new: true })
@@ -61,5 +56,5 @@ module.exports.disLikeItem = (req, res) => {
       throw new NotFoundError(ITEM_NOT_FOUND_ERROR_MESSAGE);
     })
     .then((newItem) => res.send(newItem))
-    .catch((err) => handleIdError(err, res));
+    .catch((err) => handleIdError(err, next));
 };

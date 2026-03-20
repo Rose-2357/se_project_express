@@ -1,6 +1,5 @@
 const ForbiddenError = require("../customError/ForbiddenError");
 const Item = require("../models/clothingitems");
-const { FORBIDDEN_ERROR_CODE } = require("../utils/errors");
 
 module.exports = (req, res, next) => {
   const { id } = req.params;
@@ -15,7 +14,7 @@ module.exports = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === "ForbiddenError") {
-        return res.status(FORBIDDEN_ERROR_CODE).send({ message: err.message });
+        return next(new ForbiddenError());
       }
       return next(); // other errors are handeled by the next methode
     });
