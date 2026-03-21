@@ -1,11 +1,12 @@
 const validator = require("validator");
+const validationMessages = require("./validationMessages");
 
 module.exports = {
   urlValidator: {
     validator(v) {
       return validator.isURL(v) || !v;
     },
-    message: "You must enter a valid url",
+    message: validationMessages.GENERAL.URL,
   },
   imageValidator: {
     validator(v) {
@@ -21,12 +22,12 @@ module.exports = {
         })
         .catch(() => false);
     },
-    message: "URL is not a valid image",
+    message: validationMessages.GENERAL.IMAGE,
   },
   emailValidator: {
     validator(v) {
       return validator.isEmail(v);
     },
-    message: "You must enter a valid email",
+    message: validationMessages.GENERAL.EMAIL,
   },
 };

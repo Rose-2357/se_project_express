@@ -6,14 +6,20 @@ const {
   updateUser,
 } = require("../controllers/user");
 const auth = require("../middlewares/auth");
+const {
+  validateUserBody,
+  validateId,
+  validateUserLoginBody,
+  validateUserUpdateBody,
+} = require("../middlewares/validation");
 
-userRouter.post("/signup", createUser);
-userRouter.post("/signin", login);
+userRouter.post("/signup", validateUserBody, createUser);
+userRouter.post("/signin", validateUserLoginBody, login);
 
 userRouter.use(auth);
 
-userRouter.get("/users/me", getCurrentUser);
+userRouter.get("/users/me", validateId, getCurrentUser);
 
-userRouter.patch("/users/me", updateUser);
+userRouter.patch("/users/me", validateUserUpdateBody, updateUser);
 
 module.exports = userRouter;

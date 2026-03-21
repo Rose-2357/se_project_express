@@ -3,13 +3,14 @@ const bcrypt = require("bcryptjs");
 const { urlValidator, emailValidator } = require("../utils/validators");
 const UnathorizedError = require("../customError/UnathorizedError");
 const BadRequestError = require("../customError/BadRequestError");
+const validationMessages = require("../utils/validationMessages");
 
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, 'The "name" field must be filled'],
-    minlength: [2, 'The minimum length of the "name" field is 2'],
-    maxlength: [30, 'The maximum length of the "name" field is 30'],
+    required: [true, validationMessages.NAME.REQUIRED],
+    minlength: [2, validationMessages.NAME.MIN],
+    maxlength: [30, validationMessages.NAME.MAX],
   },
   avatar: {
     type: String,
@@ -17,13 +18,13 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: [true, 'The "email" field must be filled'],
+    required: [true, validationMessages.EMAIL.REQUIRED],
     unique: true,
     validate: emailValidator,
   },
   password: {
     type: String,
-    required: [true, 'The "password" field must be filled'],
+    required: [true, validationMessages.PASSWORD.REQUIRED],
     select: false,
   },
 });
