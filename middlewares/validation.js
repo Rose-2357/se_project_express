@@ -41,7 +41,7 @@ module.exports.validateCardBody = celebrate({
 module.exports.validateUserBody = celebrate({
   body: {
     name: nameField,
-    avatar: Joi.custom(validateUrl).messages({
+    avatar: Joi.string().custom(validateUrl).messages({
       "string.url": validationMessages.GENERAL.URL,
     }),
     email: Joi.string().required().custom(validateEmail).messages({
@@ -69,7 +69,7 @@ module.exports.validateUserLoginBody = celebrate({
 module.exports.validateUserUpdateBody = celebrate({
   body: {
     name: nameField,
-    avatar: Joi.custom(validateUrl).messages({
+    avatar: Joi.string().custom(validateUrl).messages({
       "string.url": validationMessages.GENERAL.URL,
     }),
   },

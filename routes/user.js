@@ -18,7 +18,7 @@ userRouter.post("/signin", validateUserLoginBody, login);
 
 userRouter.use(auth);
 
-userRouter.get("/users/me", validateId, getCurrentUser);
+userRouter.get("/users/me", getCurrentUser);
 
 userRouter.patch("/users/me", validateUserUpdateBody, updateUser);
 
