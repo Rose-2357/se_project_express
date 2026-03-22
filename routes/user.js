@@ -8,7 +8,6 @@ const {
 const auth = require("../middlewares/auth");
 const {
   validateUserBody,
-  validateId,
   validateUserLoginBody,
   validateUserUpdateBody,
 } = require("../middlewares/validation");
