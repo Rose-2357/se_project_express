@@ -69,7 +69,7 @@ module.exports.validateUserLoginBody = celebrate({
 module.exports.validateUserUpdateBody = celebrate({
   body: {
     name: nameField,
-    avatar: Joi.string().custom(validateUrl).messages({
+    avatar: Joi.string().allow("").custom(validateUrl).messages({
       "string.url": validationMessages.GENERAL.URL,
     }),
   },
