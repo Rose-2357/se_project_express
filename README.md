@@ -22,3 +22,11 @@ Creates a server for the WTWR application use and connects it to a database
 
 - [Google Drive Link](https://drive.google.com/file/d/1HH5-BEneGcoWoMjTje2s4gnIE3aeKVBQ/view?usp=drive_link)
 - [YouTube Link](https://youtu.be/bQjtnc0gl_8)
+
+# Front End Repository:
+
+- [WTWR Front End Repository](https://github.com/Rose-2357/se_project_react)
+
+# Deployed project:
+
+- [WTWR Deployed Project](https://rose-ghaffari-wtwr.privatedns.org/)
